@@ -1,0 +1,8 @@
+capacitor connected to node 24 and 23
+capacitor connected to node 8 and 9
+resistor connected to node 11 and 23
+resistor connected to node 8 and 23
+capacitor connected to node 21 and 22
+resistor connected to node 17 and 12
+inductor connected to node 9 and 7
+inductor connected to node 18 and 22
