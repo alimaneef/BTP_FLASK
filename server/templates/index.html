@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask App</title>
+</head>
+<body>
+    <h1>Login Form</h1>
+    <form action="{{url_for('index')}}" method="post">
+        <input type="text" name="username" placeholder="Username"><br>
+        <input type="password" name="password" placeholder="Password"><br>
+        <input type="submit" value="Login">
+    </form>
+
+    <h1>File Upload</h1>
+    <form action="{{url_for('upload_image')}}" method="post" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*"> 
+        <input type="submit" value="Upload File">
+    </form>
+</body>
+</html>
