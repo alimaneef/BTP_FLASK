@@ -132,7 +132,14 @@ def upload_image():
 
         # Converting PIL image into array
         image_array = np.array(pil_image)
+        image_np=image_array
 
+        # If the image is in RGB, convert it to BGR
+        if pil_image.mode == "RGB":
+            image_array = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
+        else:
+            # For grayscale or other modes, no conversion needed
+            image_array = image_array
 
     
         hsv_image = cv2.cvtColor(image_array, cv2.COLOR_BGR2HSV)
@@ -150,23 +157,37 @@ def upload_image():
         lower_blue = np.array([100, 50, 50])
         upper_blue = np.array([130, 255, 255])
         blue_mask = cv2.inRange(hsv_image, lower_blue, upper_blue)
+        
+        #ye code ek ka hai
         # Remove blue lines by combining the masks
         final_mask = cv2.bitwise_and(red_mask, cv2.bitwise_not(blue_mask))
         output_image = np.ones_like(image_array) * 255
         # Set red areas (in the mask) to black
         output_image[final_mask > 0] = [0, 0, 0]  # Set red mask regions to black
         output_pil_image = Image.fromarray(output_image)
-        # output_pil_image.show()
+        output_pil_image.show()
+        blackAndwhite_filename_forText = f'blackAndwhiteText_{file.filename}'
+        blackAndwhite_filepath_forText = os.path.join(app.config['UPLOAD_FOLDER'],blackAndwhite_filename_forText)
+        cv2.imwrite(blackAndwhite_filepath_forText, output_image)
 
+        # Remove red lines by combining the masks
+        final_mask2 = cv2.bitwise_and(blue_mask, cv2.bitwise_not(red_mask))
+        output_image2 = np.ones_like(image_array) * 255
+        # Set blue areas (in the mask) to black
+        output_image2[final_mask2 > 0] = [0, 0, 0]  # Set blue mask regions to black
+        output_pil_image2 = Image.fromarray(output_image2)
+        output_pil_image2.show()
 
+        #pehle output_image thi ab 2 kar diya
+       
         blackAndwhite_filename = f'blackAndwhite_{file.filename}'
         blackAndwhite_filepath = os.path.join(app.config['UPLOAD_FOLDER'],blackAndwhite_filename)
-        cv2.imwrite(blackAndwhite_filepath, output_image)
-
-
+        cv2.imwrite(blackAndwhite_filepath, output_image2)
+        # cv2.imshow("asdsfdf",blackAndwhite_filepath) 
+        
         # Easy OCR tasks Begin
         reader = Reader(['en'],gpu=True)
-        img = Image.open(blackAndwhite_filepath).convert('RGB')
+        img = Image.open(blackAndwhite_filepath_forText).convert('RGB')
         img_array = np.array(img)
         results = reader.readtext(img_array, detail=1)
         for (bbox, text, prob) in results:
@@ -180,7 +201,7 @@ def upload_image():
                 cv2.putText(img_array, text, (top_left[0], top_left[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
 
         text_detection_results=Image.fromarray(img_array)
-        # text_detection_results.show()    
+        text_detection_results.show()    
 
         
         
@@ -189,15 +210,17 @@ def upload_image():
         model.confidence = 50
         model.overlap = 25
         # Make a prediction
-        prediction = model.predict(filepath)
+        #yahan change karna padega filepath iska dena hoga
+        #shi to hai nhi dekho ek min
+        prediction = model.predict(blackAndwhite_filepath)
+#hmm vo pehle vaali thi
 
-
-
-        image = Image.open(filepath)
+        # ismain konsi image deni hai filepath to ye hai
+        image = Image.open(blackAndwhite_filepath)
         # Create a drawing context
         draw = ImageDraw.Draw(image)
         # YOLOv5 prediction data (bounding boxes and classes)
-        # Draw bounding boxes on the image
+        # Draw bounding boxes on the image ye image par ban 
         for detection in prediction:
             # Calculate the top-left and bottom-right coordinates of the bounding box
             x1 = detection["x"] - detection["width"] / 2
@@ -206,6 +229,8 @@ def upload_image():
             y2 = detection["y"] + detection["height"] / 2
 
             # Draw the bounding box
+            # ye hain na roboflwo waale to
+            #vo doosra vaala i think ocr ka hoga
             draw.rectangle([x1, y1, x2, y2], outline="red", width=2)
 
             # Label the box with the class name
@@ -225,11 +250,14 @@ def upload_image():
         
         
         # Canny 
-        gray_image = cv2.cvtColor(image_array, cv2.COLOR_BGR2GRAY)
+        canny_pil_image = Image.open(blackAndwhite_filepath)
+        canny_image_array = np.array(canny_pil_image)
+        gray_image = cv2.cvtColor(canny_image_array, cv2.COLOR_BGR2GRAY)
         blurred_image = cv2.GaussianBlur(gray_image, (5,5), 1.5)
         # Apply Canny edge detection
         edges = cv2.Canny(blurred_image, threshold1=50, threshold2=150)
         bounding_lines = np.zeros_like(edges)
+        #ye vaala canny ke box hain
         for detection in prediction:
             # Calculate the top-left and bottom-right coordinates of the bounding box
             x1 = int(detection["x"] - detection["width"] / 2)
@@ -240,6 +268,9 @@ def upload_image():
             # Set the region inside the bounding box to 0 (black) in the edges image
             edges[y1:y2, x1:x2] = 0 
         
+
+        #canny vaale main text
+        #matlab ye jo abhi kholi thi thk hai
         # Convert the edges NumPy array to a PIL Image
         edges_pil_image = Image.fromarray(edges)
         edges_pil_image.show()
@@ -249,7 +280,7 @@ def upload_image():
         bounding_lines_pil_image.show()
 
         binary_matrix = np.where(edges > 0, 1, 0)
-        rectangle_matrix = np.where(bounding_lines>0,1,0)
+        # rectangle_matrix = np.where(bounding_lines>0,1,0)
 
 
 
@@ -258,6 +289,8 @@ def upload_image():
         labeled_matrix = label_connected_components(binary_matrix, threshold)
         # Visualize the labels on the image without compression
         visualized_image = visualize_labels_without_compression(labeled_matrix)
+        visualized_image_pil=Image.fromarray(visualized_image)
+        visualized_image_pil.show()
         num_labels = count_labels(labeled_matrix)
         image_height, image_width = image_array.shape[:2]
         # Create a blank binary matrix (label matrix) with the same dimensions as the image
@@ -269,7 +302,6 @@ def upload_image():
             y1 = int(detection["y"] - detection["height"] / 2)
             x2 = int(detection["x"] + detection["width"] / 2)
             y2 = int(detection["y"] + detection["height"] / 2)
-
             # Label the boundary of the bounding box with the unique label ID (outline only)
             label_id = i+1
             cv2.rectangle(labelled_matrix_component, (x1, y1), (x2, y2), label_id, thickness=10)
