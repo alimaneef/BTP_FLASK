@@ -25,8 +25,10 @@ def index():
 
 # Configure upload folder and allowed extensions
 UPLOAD_FOLDER = 'uploads'
+OUTPUT_FOLDER = 'outputs'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['OUTPUT_FOLDER'] = OUTPUT_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB max file size
 
 # Initialize Roboflow
@@ -331,7 +333,8 @@ def upload_image():
 
 
         output_dir = './outputs'
-        output_file = os.path.join(output_dir, 'output.txt')
+        output_file_name = f'output_{file.filename.replace('.jpg',"")}.txt'
+        output_file = os.path.join(app.config['OUTPUT_FOLDER'], output_file_name)
         os.makedirs(output_dir, exist_ok=True)
 
         i = 0
@@ -398,18 +401,24 @@ def upload_image():
         image.save(processed_path)
 
         # return jsonify({'success': True, 'message': 'Image uploaded and processed successfully!', 'processed_image': processed_path})
-        return redirect(url_for('show_result', filename=processed_filename))
+        return redirect(url_for('show_result', filename=processed_filename,filename2=output_file_name))
     except Exception as e:
         return jsonify({'success': False, 'message': f'Error processing image: {str(e)}'}), 500
 
-@app.route('/result/<filename>')
-def show_result(filename):
+@app.route('/result/<filename>/<filename2>')
+def show_result(filename, filename2):
     processed_image_url = url_for('uploaded_file', filename=filename)
-    return render_template('result.html', image_url=processed_image_url)
+    processed_text_url = url_for('uploaded_text_file', filename=filename2)
+    return render_template('result.html', image_url=processed_image_url, text_url=processed_text_url)
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+# Route to serve text file from the 'outputs' folder
+@app.route('/outputs/<filename>')
+def uploaded_text_file(filename):
+    return send_from_directory(app.config['OUTPUT_FOLDER'], filename)
 
 if __name__== '__main__':
     app.run(host='0.0.0.0',debug=True)

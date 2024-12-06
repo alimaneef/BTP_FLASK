@@ -1,0 +1,11 @@
+capacitor connected to node 4 and 6
+capacitor connected to node 3 and 4
+capacitor connected to node 9 and 10
+resistor connected to node 9 and 3
+resistor connected to node 9 and 6
+resistor connected to node 5 and 7
+inductor connected to node 8 and 2
+capacitor connected to node 2 and 5
+resistor connected to node 8 and 7
+capacitor connected to node 8 and 10
+resistor connected to node 2 and 4

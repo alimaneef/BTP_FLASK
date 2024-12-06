@@ -5,18 +5,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flask App</title>
 </head>
+<style>
+    body {
+            font-family: 'Arial', sans-serif;
+            background-color: #0d1117;
+            margin: 0;
+            padding: 0;
+        }
+
+        .heading {
+            text-align: center;
+            color: #45a049;
+            font-size: 36px;
+            margin-top: 50px;
+        }
+
+        .form-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+
+        .upload-form {
+            background-color: #161b22;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        .upload-form input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+            color: #c9d1d9;
+        }
+
+        .upload-form input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .upload-form input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 6rem;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .container{
+            margin-top: 6rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4rem;
+        }
+</style>
 <body>
-    <h1>Login Form</h1>
+    <!-- <h1>Login Form</h1>
     <form action="{{url_for('index')}}" method="post">
         <input type="text" name="username" placeholder="Username"><br>
         <input type="password" name="password" placeholder="Password"><br>
         <input type="submit" value="Login">
-    </form>
+    </form> -->
 
-    <h1>File Upload</h1>
-    <form action="{{url_for('upload_image')}}" method="post" enctype="multipart/form-data">
-        <input type="file" name="image" accept="image/*"> 
-        <input type="submit" value="Upload File">
-    </form>
+    <h1 class="heading">File Upload</h1>
+    <div class="container">
+        <form class="upload-form" action="{{url_for('upload_image')}}" method="post" enctype="multipart/form-data">
+            <input type="file" name="image" accept="image/*"> 
+            <input type="submit" value="Upload File">
+        </form>
+        <div class="footer">
+            <p>Powered by Flask</p>
+        </div>
+    </div>
 </body>
 </html>

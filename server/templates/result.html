@@ -4,11 +4,179 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Processed Image</title>
+    <style>
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #121212; /* Dark theme background */
+            color: #e0e0e0; /* Light text for contrast */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Container Layout */
+        .container {
+            width: 90vw;
+            height: 90vh;
+            display: flex;
+            background: #1e1e1e; /* Slightly lighter dark background */
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            overflow: hidden;
+        }
+
+        /* Left Container */
+        .left-container {
+            width: 70%;
+            padding: 2rem;
+            text-align: center;
+            background: #2a2a2a; /* Darker section background */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .left-container h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            color: #ffffff; /* Bright white heading */
+        }
+
+        .left-container img {
+            width: 60%;
+            max-width: 400px;
+            aspect-ratio: 1;
+            border-radius: 20px;
+            border: 2px solid #333333;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .left-container img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Right Container */
+        .right-container {
+            width: 30%;
+            padding: 2rem;
+            text-align: center;
+            background: #1e1e1e; /* Matches outer container for consistency */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-left: 2px solid #333333; /* Subtle border for separation */
+        }
+
+        .right-container h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #f4a261; /* Warm orange accent */
+        }
+
+        .right-container p {
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            color: #bdbdbd; /* Softer light text for readability */
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .right-container a {
+            text-decoration: none;
+            display: inline-block;
+            width: 80%;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border-radius: 25px;
+            margin-bottom: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .right-container .back-button {
+            background: #4caf50; /* Vibrant green for action */
+            color: white;
+            border: 2px solid #4caf50;
+        }
+
+        .right-container .back-button:hover {
+            background: transparent;
+            color: #4caf50;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .right-container .download-button {
+            background: #2196f3; /* Bright blue for download */
+            color: white;
+            border: 2px solid #2196f3;
+        }
+
+        .right-container .download-button:hover {
+            background: transparent;
+            color: #2196f3;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+        }
+
+        /* Footer Section */
+        .footer {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #757575; /* Subtle footer text */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+                width: 95vw;
+            }
+
+            .left-container, .right-container {
+                width: 100%;
+            }
+
+            .left-container img {
+                width: 80%;
+            }
+
+            .right-container {
+                border-left: none;
+                border-top: 2px solid #333333;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Processed Image</h1>
-    <img src="{{ image_url }}" style="width: 600px; height: 400px;" alt="Processed Image">
-    <br><br>
-    <a href="/">Upload Another Image</a>
+    <div class="container">
+        <!-- Left Container -->
+        <div class="left-container">
+            <h1>Processed Image</h1>
+            <img src="{{ image_url }}" alt="Processed Image">
+        </div>
+        
+        <!-- Right Container -->
+        <div class="right-container">
+            <h2>Actions</h2>
+            <p>Download the generated netlist file or upload a new image for processing.</p>
+            <a href="/" class="back-button">Upload Another Image</a>
+            <a href="{{ text_url }}" download class="download-button">Download Netlist</a>
+        </div>
+    </div>
 </body>
 </html>
