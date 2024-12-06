@@ -1,3 +1,0 @@
-inductor connected to node 2 and 3
-inductor connected to node 3 and 5
-inductor connected to node 2 and 5
