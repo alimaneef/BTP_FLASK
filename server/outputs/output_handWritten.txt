@@ -1,11 +1,11 @@
-capacitor connected to node 4 and 6
-capacitor connected to node 3 and 4
-capacitor connected to node 9 and 10
-resistor connected to node 9 and 3
-resistor connected to node 9 and 6
-resistor connected to node 5 and 7
-inductor connected to node 8 and 2
-capacitor connected to node 2 and 5
-resistor connected to node 8 and 7
-capacitor connected to node 8 and 10
-resistor connected to node 2 and 4
+capacitor connected to node 4 and 6 having value 2uf
+capacitor connected to node 3 and 4 having value 5 uf
+capacitor connected to node 9 and 10 having value 8 k
+resistor connected to node 9 and 3 having value Iok
+resistor connected to node 9 and 6 having value 9k
+resistor connected to node 5 and 7 having value 6k
+inductor connected to node 8 and 2 having value 12H
+capacitor connected to node 2 and 5 having value 7k
+resistor connected to node 8 and 7 having value 13H
+capacitor connected to node 8 and 10 having value 4uf
+resistor connected to node 2 and 4 having value 11H

@@ -167,7 +167,7 @@ def upload_image():
         # Set red areas (in the mask) to black
         output_image[final_mask > 0] = [0, 0, 0]  # Set red mask regions to black
         output_pil_image = Image.fromarray(output_image)
-        output_pil_image.show()
+        # output_pil_image.show()
         blackAndwhite_filename_forText = f'blackAndwhiteText_{file.filename}'
         blackAndwhite_filepath_forText = os.path.join(app.config['UPLOAD_FOLDER'],blackAndwhite_filename_forText)
         cv2.imwrite(blackAndwhite_filepath_forText, output_image)
@@ -178,7 +178,7 @@ def upload_image():
         # Set blue areas (in the mask) to black
         output_image2[final_mask2 > 0] = [0, 0, 0]  # Set blue mask regions to black
         output_pil_image2 = Image.fromarray(output_image2)
-        output_pil_image2.show()
+        # output_pil_image2.show()
 
         #pehle output_image thi ab 2 kar diya
        
@@ -203,7 +203,7 @@ def upload_image():
                 cv2.putText(img_array, text, (top_left[0], top_left[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
 
         text_detection_results=Image.fromarray(img_array)
-        text_detection_results.show()    
+        # text_detection_results.show()    
 
         
         
@@ -275,11 +275,11 @@ def upload_image():
         #matlab ye jo abhi kholi thi thk hai
         # Convert the edges NumPy array to a PIL Image
         edges_pil_image = Image.fromarray(edges)
-        edges_pil_image.show()
+        # edges_pil_image.show()
 
         # Convert bounding_lines into PIL image
         bounding_lines_pil_image = Image.fromarray(bounding_lines)
-        bounding_lines_pil_image.show()
+        # bounding_lines_pil_image.show()
 
         binary_matrix = np.where(edges > 0, 1, 0)
         # rectangle_matrix = np.where(bounding_lines>0,1,0)
@@ -292,7 +292,7 @@ def upload_image():
         # Visualize the labels on the image without compression
         visualized_image = visualize_labels_without_compression(labeled_matrix)
         visualized_image_pil=Image.fromarray(visualized_image)
-        visualized_image_pil.show()
+        # visualized_image_pil.show()
         num_labels = count_labels(labeled_matrix)
         image_height, image_width = image_array.shape[:2]
         # Create a blank binary matrix (label matrix) with the same dimensions as the image
@@ -337,6 +337,7 @@ def upload_image():
         output_file = os.path.join(app.config['OUTPUT_FOLDER'], output_file_name)
         os.makedirs(output_dir, exist_ok=True)
 
+        '''
         i = 0
         print(len(prediction))
         with open(output_file, 'w') as text_file:
@@ -351,12 +352,41 @@ def upload_image():
                 elif(len(nodes)>=2):
                     text_file.write(f"{str} connected to node {nodes[0]} and {nodes[1]}\n")
                 i += 1
-        
+        '''
 
 
 
+        from ctypes import sizeof
+        n = len(prediction)
+        text_pred = [0] * n # initializes an array with all elements set to 0
+        for result in results:
+            max_value = float('inf')
+            comp = 0
+            for res in result[0]:
+                index = 0
+                for pred in prediction:
+                    dist = abs(res[0]-pred["x"])+abs(res[1]-pred["y"])
+                    if dist<max_value :
+                        max_value = dist
+                        comp = index
+                    index += 1
+            text_pred[comp] =   result[1]
 
+        # for i in text_pred:
+            # print(i)
+        i = 0
+        with open(output_file, 'w') as text_file:
+            for detection in prediction:
+                nodes = list(array_of_sets[i])
+                # Calculate the top-left and bottom-right coordinates of the bounding box
+                str = detection['class']
+                nodes = list(array_of_sets[i])
 
+                if(len(array_of_sets[i])==1):
+                    text_file.write(f"{str} connected to only one node {array_of_sets[i].pop()} having value {text_pred[i]}\n")
+                elif(len(nodes)>=2):
+                    text_file.write(f"{str} connected to node {nodes[0]} and {nodes[1]} having value {text_pred[i]}\n")
+                i += 1
 
 
 
