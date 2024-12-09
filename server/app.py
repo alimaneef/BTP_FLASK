@@ -34,7 +34,7 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB max file size
 # Initialize Roboflow
 rf = Roboflow(api_key="s5x7SRtXClTYVdRddG1E")
 project = rf.workspace().project("electronic-circuit-iysi9")
-model = project.version("3").model
+model = project.version("5").model
 
 
 def dfs_iterative(matrix, start_x, start_y, label, threshold=1):
@@ -167,7 +167,7 @@ def upload_image():
         # Set red areas (in the mask) to black
         output_image[final_mask > 0] = [0, 0, 0]  # Set red mask regions to black
         output_pil_image = Image.fromarray(output_image)
-        # output_pil_image.show()
+        output_pil_image.show()
         blackAndwhite_filename_forText = f'blackAndwhiteText_{file.filename}'
         blackAndwhite_filepath_forText = os.path.join(app.config['UPLOAD_FOLDER'],blackAndwhite_filename_forText)
         cv2.imwrite(blackAndwhite_filepath_forText, output_image)
@@ -178,7 +178,7 @@ def upload_image():
         # Set blue areas (in the mask) to black
         output_image2[final_mask2 > 0] = [0, 0, 0]  # Set blue mask regions to black
         output_pil_image2 = Image.fromarray(output_image2)
-        # output_pil_image2.show()
+        output_pil_image2.show()
 
         #pehle output_image thi ab 2 kar diya
        
@@ -203,7 +203,7 @@ def upload_image():
                 cv2.putText(img_array, text, (top_left[0], top_left[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
 
         text_detection_results=Image.fromarray(img_array)
-        # text_detection_results.show()    
+        text_detection_results.show()    
 
         
         
@@ -236,8 +236,8 @@ def upload_image():
             draw.rectangle([x1, y1, x2, y2], outline="red", width=2)
 
             # Label the box with the class name
-            font = ImageFont.truetype("arial.ttf", size=40)
-            draw.text((x1, y1 - 10), detection["class"], fill="red",font=font)
+            font = ImageFont.truetype("arial.ttf", size=20)
+            draw.text((x1, y1 - 20), detection["class"], fill="red",font=font)
 
         
         
@@ -275,11 +275,11 @@ def upload_image():
         #matlab ye jo abhi kholi thi thk hai
         # Convert the edges NumPy array to a PIL Image
         edges_pil_image = Image.fromarray(edges)
-        # edges_pil_image.show()
+        edges_pil_image.show()
 
         # Convert bounding_lines into PIL image
         bounding_lines_pil_image = Image.fromarray(bounding_lines)
-        # bounding_lines_pil_image.show()
+        bounding_lines_pil_image.show()
 
         binary_matrix = np.where(edges > 0, 1, 0)
         # rectangle_matrix = np.where(bounding_lines>0,1,0)
@@ -292,7 +292,7 @@ def upload_image():
         # Visualize the labels on the image without compression
         visualized_image = visualize_labels_without_compression(labeled_matrix)
         visualized_image_pil=Image.fromarray(visualized_image)
-        # visualized_image_pil.show()
+        visualized_image_pil.show()
         num_labels = count_labels(labeled_matrix)
         image_height, image_width = image_array.shape[:2]
         # Create a blank binary matrix (label matrix) with the same dimensions as the image
