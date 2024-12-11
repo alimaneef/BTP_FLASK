@@ -199,8 +199,8 @@ def upload_image():
                 top_left = tuple(map(int, top_left))
                 bottom_right = tuple(map(int, bottom_right))
 
-                cv2.rectangle(img_array, top_left, bottom_right, (0, 255, 0), 2)
-                cv2.putText(img_array, text, (top_left[0], top_left[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
+                cv2.rectangle(img_array, top_left, bottom_right, (255, 0, 255), 2)
+                cv2.putText(img_array, text, (top_left[0], top_left[1] - 15), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 2)
 
         text_detection_results=Image.fromarray(img_array)
         text_detection_results.show()    
@@ -233,10 +233,10 @@ def upload_image():
             # Draw the bounding box
             # ye hain na roboflwo waale to
             #vo doosra vaala i think ocr ka hoga
-            draw.rectangle([x1, y1, x2, y2], outline="red", width=2)
+            draw.rectangle([x1, y1, x2, y2], outline="green", width=2)
 
             # Label the box with the class name
-            font = ImageFont.truetype("arial.ttf", size=20)
+            font = ImageFont.truetype("arial.ttf", size=40)
             draw.text((x1, y1 - 20), detection["class"], fill="red",font=font)
 
         
@@ -331,7 +331,6 @@ def upload_image():
 
 
 
-
         output_dir = './outputs'
         output_file_name = f'output_{file.filename.replace('.jpg',"")}.txt'
         output_file = os.path.join(app.config['OUTPUT_FOLDER'], output_file_name)
@@ -374,19 +373,73 @@ def upload_image():
 
         # for i in text_pred:
             # print(i)
+
         i = 0
+        is_ground_found = False
+        ground_set = set()
+        my_set = set()
+        for detection in prediction:
+            nodes = list(array_of_sets[i])
+            # Calculate the top-left and bottom-right coordinates of the bounding box
+            str = detection['class']
+            if(str=='ground'):
+                is_ground_found = True
+                ground_set.add(nodes[0])
+            for j in nodes:
+                if j in my_set:
+                    print('')
+                else :
+                    my_set.add(j)
+            i += 1
+        nodes_mapping = {}
+        count = 1
+        for j in my_set:
+            if j not in ground_set :
+                nodes_mapping[j] = count
+                count += 1
+            else :
+                nodes_mapping[j] = 0
+                nodes_mapping
+
+
+
+
+
+        diff = -1
+        i = 0
+        symbol = {
+            "resistor": "R",
+            "capacitor": "C",
+            "voltage" : "V",
+            "inductor" : "L",
+        }
+        count_comp = {
+            'resistor' : 1,
+            'capacitor' : 1,
+            'voltage' : 1,
+            'inductor' : 1
+        }
+        if is_ground_found :
+            diff = 0
+
         with open(output_file, 'w') as text_file:
             for detection in prediction:
                 nodes = list(array_of_sets[i])
-                # Calculate the top-left and bottom-right coordinates of the bounding box
                 str = detection['class']
                 nodes = list(array_of_sets[i])
-
-                if(len(array_of_sets[i])==1):
-                    text_file.write(f"{str} connected to only one node {array_of_sets[i].pop()} having value {text_pred[i]}\n")
-                elif(len(nodes)>=2):
-                    text_file.write(f"{str} connected to node {nodes[0]} and {nodes[1]} having value {text_pred[i]}\n")
+                if str == 'ground':
+                    i+= 1
+                    continue
+                elif(len(array_of_sets[i])==1):
+                    text_file.write(f"{symbol[str]}{count_comp[str]} {nodes_mapping[nodes[0]]+diff} {nodes_mapping[nodes[0]]+diff} {text_pred[i]}\n")
+                    count_comp[str] +=1
+                else:
+                    text_file.write(f"{symbol[str]}{count_comp[str]} {min(nodes_mapping[nodes[0]]+diff,nodes_mapping[nodes[1]]+diff)} {max(nodes_mapping[nodes[1]]+diff,nodes_mapping[nodes[0]]+diff)} {text_pred[i]}\n")
+                    count_comp[str] +=1
                 i += 1
+
+                
+        
 
 
 

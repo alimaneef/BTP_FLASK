@@ -1,3 +1,0 @@
-inductor connected to node 2 and 4 having value 7H
-capacitor connected to node 3 and 4 having value BbpF
-resistor connected to node 2 and 3 having value 15K
